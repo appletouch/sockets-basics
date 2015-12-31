@@ -20,9 +20,26 @@ var io = require('socket.io')(http);
 app.use(express.static(__dirname+ '/public'));
 
 //define a io event to react on
-io.on('connection', function () {
+io.on('connection', function (socket) {
+
+    //send message to client on first connect and logs in server console connection.
+    socket.emit('messageFromServer',{text:'welcome the chat application'})
     console.log('Message from server: user connected via Socket IO')
-})
+
+    //waits for on connection for event ( in this case a client message)
+    socket.on('messageFromClient', function (message) {
+
+        //logs in server console the received message from clients
+        console.log('Message received: ' + message.text);
+
+        //BROADCAST RECEIVED MESSAGE
+        //io.emit   // broadcasts message to everyone including the sender
+        socket.broadcast.emit('messageFromServer', message)    //broadcasts message to everyone BUT the sender.
+
+
+    })
+
+});
 
 //start server
 http.listen(PORT, function () {
