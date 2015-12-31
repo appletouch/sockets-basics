@@ -1,13 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>Socket test application</title>
+    <title>Chat application</title>
 
 </head>
 <body>
-Socket test application
+Socket Chat application
 
+<form id="message-form">
+    <input type="text" name="txtMessageFromClient"/>
+    <input type="submit" value="send"/>
+</form>
 
 <script src="/js/jquery-2.1.4.min.js"></script>
 <script src="/js/socket.io-1.3.7.js"></script>

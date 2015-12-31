@@ -13,3 +13,13 @@ socket.on("connect", function () {
 socket.on("messageFromServer", function (message) {
     console.log('new Message: '+ message.text)
 })
+
+//handles submitting of new Messaged
+var $form = jQuery('#message-form');
+$form.on('submit', function (event) {
+    event.preventDefault();
+    var messageText = $form.find('input[name=txtMessageFromClient]').val()
+    socket.emit('messageFromClient',{
+        text:messageText
+    })
+})
