@@ -2,6 +2,7 @@
  * Created by PKoolwijk on 28-12-2015.
  */
 
+//***********SET UP APPLICATION ENVIRONMENT***********************
 
 //use standard port set by HERKU or use 3000 for local development
 var PORT =process.env.PORT || 3000;
@@ -10,14 +11,18 @@ var PORT =process.env.PORT || 3000;
 var express = require("express");
 var app = express();
 
-//Make http server
+//Make http server linked to express application
 var http = require('http').Server(app);
 
 //Connect Socket IO to http server
 var io = require('socket.io')(http);
 
-//let express use a static folder
+//let express application use a static folder
 app.use(express.static(__dirname+ '/public'));
+
+
+
+//**********CONFIG APPLICATION***********************
 
 //define a io event to react on
 io.on('connection', function (socket) {
@@ -40,6 +45,9 @@ io.on('connection', function (socket) {
     })
 
 });
+
+
+//**********START APPLICATION***********************
 
 //start server
 http.listen(PORT, function () {
