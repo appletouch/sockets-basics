@@ -63,7 +63,7 @@ function getDateTime(fullOrShort) {
     if(fullOrShort==='f'){
         var dateTime = day+'/'+month+'/'+year+' '+hour+':'+minute+':'+second;
     }else{
-        var dateTime =+hour+':'+minute+':'+second;
+        var dateTime =+hour+':'+minute;
     }
 
     return dateTime;
