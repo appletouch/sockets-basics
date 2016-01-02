@@ -38,8 +38,8 @@ io.on('connection', function (socket) {
         console.log('Message received: ' + message.text);
 
         //BROADCAST RECEIVED MESSAGE
-        //io.emit   // broadcasts message to everyone including the sender
-        socket.broadcast.emit('messageFromServer', message)    //broadcasts message to everyone BUT the sender.
+        io.emit('messageFromServer', message)   // broadcasts message to everyone including the sender
+        //socket.broadcast.emit('messageFromServer', message)    //broadcasts message to everyone BUT the sender.
 
 
     })
