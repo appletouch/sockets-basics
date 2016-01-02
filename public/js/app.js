@@ -3,7 +3,9 @@
  */
 
 var socket =io();
-
+var userName= getQueryVariable('name')||'Anonymous';
+var roomName= getQueryVariable('room')||'Lobby';
+console.log(userName+ ' wants to join '+ roomName);
 
 //Write messeage in console of the browser to confirm connection with server
 socket.on("connect", function () {
@@ -12,28 +14,34 @@ socket.on("connect", function () {
 
 //Listen to broadcast send by the server and act on it.
 socket.on("messageFromServer", function (message) {
+    timeToShowInWelcome=moment();
+    console.log(timeToShowInWelcome.format('MMMM Do YYYY, HH:mm:ss') +': '+  message.text )  //log message from serverin console of browser
 
-    console.log(getDateTime('f')+': '+ message.text)  //log message from serverin console of browser
-
+    var $chatMessages=jQuery('.messages');
     //Selector # =target bij id, .= target by class or use name of the tag
-    jQuery('.messages').append('<p>' + getDateTime('s')+': '+ message.text + '</p>')  //adds content to exsiting mark-up
+    $chatMessages.append('<p><strong>'+ message.name + ' '+  getDateTime('s')+'</strong></p>')  //name field added to message when send
+    $chatMessages.append('<p>'+ message.text + '</p>');  //adds content to exsiting mark-up
 
 
 
-})
+});
 
 //handles submitting of new Messaged
 var $form = jQuery('#message-form');
 $form.on('submit', function (event) {
+
     event.preventDefault(); //prevents default postback
     var messageFieldInForm = $form.find('input[name=txtMessageFromClient]'); //find textfield in form
-    socket.emit('messageFromClient',{
-        text:messageFieldInForm.val()
-    })
-    messageFieldInForm.val('');
+   if((messageFieldInForm.val()).trim().length>0)
+   {
+           socket.emit('messageFromClient',{
+               name:userName,
+               text:messageFieldInForm.val()
+           });
+           messageFieldInForm.val('');
+   }
 
-
-})
+});
 
 
 function getDateTime(fullOrShort) {
@@ -45,19 +53,19 @@ function getDateTime(fullOrShort) {
     var minute  = now.getMinutes();
     var second  = now.getSeconds();
     if(month.toString().length == 1) {
-        var month = '0'+month;
+        month = '0'+month;
     }
     if(day.toString().length == 1) {
-        var day = '0'+day;
+        day = '0'+day;
     }
     if(hour.toString().length == 1) {
-        var hour = '0'+hour;
+        hour = '0'+hour;
     }
     if(minute.toString().length == 1) {
-        var minute = '0'+minute;
+        minute = '0'+minute;
     }
     if(second.toString().length == 1) {
-        var second = '0'+second;
+        second = '0'+second;
     }
 
     if(fullOrShort==='f'){

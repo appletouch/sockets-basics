@@ -7,6 +7,8 @@
 //use standard port set by HERKU or use 3000 for local development
 var PORT =process.env.PORT || 3000;
 
+var moment =require('moment'); //linking in moment module.
+
 //Make express application
 var express = require("express");
 var app = express();
@@ -28,7 +30,11 @@ app.use(express.static(__dirname+ '/public'));
 io.on('connection', function (socket) {
 
     //send message to client on first connect and logs in server console connection.
-    socket.emit('messageFromServer',{text:'welcome the chat application'})
+    socket.emit('messageFromServer',{
+        name:'Webmaster',
+        text:'welcome the chat application',
+        timestamp:moment().valueOf()
+    })
     console.log('Message from server: user connected via Socket IO')
 
     //waits for on connection for event ( in this case a client message)
@@ -36,6 +42,7 @@ io.on('connection', function (socket) {
 
         //logs in server console the received message from clients
         console.log('Message received: ' + message.text);
+        console.log('Message received: ' + message.name);
 
         //BROADCAST RECEIVED MESSAGE
         io.emit('messageFromServer', message)   // broadcasts message to everyone including the sender
