@@ -3,7 +3,7 @@
  */
 
 var socket =io();
-var userName= getQueryVariable('name')||'Anonymous';
+var userName= getQueryVariable('username')||'Anonymous';
 var roomName= getQueryVariable('room')||'Lobby';
 console.log(userName+ ' wants to join '+ roomName);
 
