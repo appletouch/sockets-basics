@@ -30,7 +30,7 @@ app.use(express.static(__dirname+ '/public'));
 //define a io event to react on
 io.on('connection', function (socket) {
 
-    //set of key/value pairs key: {user,name}
+    //set of key/value pairs with--> special-key: {username,room}
     var clientInfo={};
 
     socket.on('disconnect', function () {
@@ -38,18 +38,18 @@ io.on('connection', function (socket) {
         if(typeof userData!=='undefined'){
             socket.leave(userData.roomname);
             io.to(userData.roomname).emit('messageFromServer',{
-                name:'WebMaster',
+                username:'Chatmaster',
                 text:userData.username + ' has left the room.'
-            })
+            });
             delete userData;
         }
-    })
+    });
 
 
     //send message to client on first connect and logs in server console connection.
     socket.emit('messageFromServer',{
-        name:'Webmaster',
-        text:'welcome the chat application',
+        username:'Chatmaster',
+        text:"Welcome to Let's Chat",
         timestamp:moment().valueOf()
     });
     console.log('Message from server: user connected via Socket IO');
@@ -60,7 +60,7 @@ io.on('connection', function (socket) {
         clientInfo[socket.id]=req;
         socket.join(req.roomname);
         socket.broadcast.to(req.roomname).emit('messageFromServer',{
-            name:'Webmaster',
+            username:'Chatmaster',
             text: req.username + ' has joined the room.'
         })
     });
@@ -71,7 +71,7 @@ io.on('connection', function (socket) {
 
         //logs in server console the received message from clients
         console.log('Message received: ' + message.text);
-        console.log('Message received: ' + message.name);
+        console.log('Message received: ' + message.username);
 
         //BROADCAST RECEIVED MESSAGE
         io.to(clientInfo[socket.id].roomname).emit('messageFromServer', message);   // broadcasts message to everyone including the sender

@@ -28,7 +28,7 @@ socket.on("messageFromServer", function (message) {
 
     var $chatMessages=jQuery('.messages');
     //Selector # =target bij id, .= target by class or use name of the tag
-    $chatMessages.append('<p><strong>'+ message.name + ' '+  getDateTime('s')+'</strong></p>');  //name field added to message when send
+    $chatMessages.append('<p><strong>'+ message.username + ' '+  getDateTime('s')+'</strong></p>');  //name field added to message when send
     $chatMessages.append('<p>'+ message.text + '</p>');  //adds content to exsiting mark-up
 
 
@@ -44,7 +44,7 @@ $form.on('submit', function (event) {
    if((messageFieldInForm.val()).trim().length>0)
    {
            socket.emit('messageFromClient',{
-               name:userName,
+               username:userName,
                text:messageFieldInForm.val()
            });
            messageFieldInForm.val('');
