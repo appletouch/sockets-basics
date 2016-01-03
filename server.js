@@ -26,16 +26,32 @@ app.use(express.static(__dirname+ '/public'));
 
 //**********CONFIG APPLICATION***********************
 
+
 //define a io event to react on
 io.on('connection', function (socket) {
+
+    //set of key/value pairs key: {user,name}
+    var clientInfo={};
 
     //send message to client on first connect and logs in server console connection.
     socket.emit('messageFromServer',{
         name:'Webmaster',
         text:'welcome the chat application',
         timestamp:moment().valueOf()
-    })
-    console.log('Message from server: user connected via Socket IO')
+    });
+    console.log('Message from server: user connected via Socket IO');
+
+
+    //waits for on connection for event ( in this case a user joint room)
+    socket.on('joinRoom', function (req) {
+        clientInfo[socket.id]=req;
+        socket.join(req.roomname);
+        socket.broadcast.to(req.roomname).emit('messageFromServer',{
+            name:'Webmaster',
+            text: req.username + ' has joined the room.'
+        })
+    });
+
 
     //waits for on connection for event ( in this case a client message)
     socket.on('messageFromClient', function (message) {
@@ -45,7 +61,7 @@ io.on('connection', function (socket) {
         console.log('Message received: ' + message.name);
 
         //BROADCAST RECEIVED MESSAGE
-        io.emit('messageFromServer', message)   // broadcasts message to everyone including the sender
+        io.to(clientInfo[socket.id].roomname).emit('messageFromServer', message);   // broadcasts message to everyone including the sender
         //socket.broadcast.emit('messageFromServer', message)    //broadcasts message to everyone BUT the sender.
 
 

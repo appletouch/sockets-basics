@@ -4,7 +4,7 @@
 
 var socket =io();
 var userName= getQueryVariable('username')||'Anonymous';
-var roomName= getQueryVariable('room')||'Lobby';
+var roomName= getQueryVariable('roomname')||'Lobby';
 console.log(userName+ ' wants to join '+ roomName);
 
 //update H1 tag wit room name
@@ -12,18 +12,23 @@ jQuery(".room-title" ).text(roomName);
 
 
 //Write messeage in console of the browser to confirm connection with server
+// send the username and the room which is being joined
 socket.on("connect", function () {
-    console.log("Message from client: connected from FE to Server")
+    console.log("Message from client: connected from FE to Server");
+    socket.emit('joinRoom', {
+        username:userName,
+        roomname:roomName
+    })
 });
 
 //Listen to broadcast send by the server and act on it.
 socket.on("messageFromServer", function (message) {
     timeToShowInWelcome=moment();
-    console.log(timeToShowInWelcome.format('MMMM Do YYYY, HH:mm:ss') +': '+  message.text )  //log message from serverin console of browser
+    console.log(timeToShowInWelcome.format('MMMM Do YYYY, HH:mm:ss') +': '+  message.text );  //log message from serverin console of browser
 
     var $chatMessages=jQuery('.messages');
     //Selector # =target bij id, .= target by class or use name of the tag
-    $chatMessages.append('<p><strong>'+ message.name + ' '+  getDateTime('s')+'</strong></p>')  //name field added to message when send
+    $chatMessages.append('<p><strong>'+ message.name + ' '+  getDateTime('s')+'</strong></p>');  //name field added to message when send
     $chatMessages.append('<p>'+ message.text + '</p>');  //adds content to exsiting mark-up
 
 

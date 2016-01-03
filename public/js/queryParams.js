@@ -7,7 +7,11 @@ function getQueryVariable(variable) {
     for (var i = 0; i < vars.length; i++) {
         var pair = vars[i].split('=');
         if (decodeURIComponent(pair[0]) == variable) {
-            return decodeURIComponent(pair[1].replace(/\+/g, ' '));
+
+            //    / marks beginning and of regular expression
+            //    \escapes the + sign as it has a special meaning in regular expressions
+            //    g   replaces ALL plusisgns
+            return decodeURIComponent(pair[1].replace(/\+/g, ' '));  //plus sign is replaced with space
         }
     }
 
