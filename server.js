@@ -26,12 +26,39 @@ app.use(express.static(__dirname+ '/public'));
 
 //**********CONFIG APPLICATION***********************
 
+/*contains the userdata
+'GUID-KEY':{
+    username:'Peter',
+    roomname:'Mijn Eigen Room'
+    }
+*/
+var clientInfo={};
+
+//sends current users to provided socket
+function sendCurrentUsers(socket){
+    var userDataRequested = clientInfo[socket.id];
+    var users =[];
+    if(typeof userDataRequested==='undefined'){
+        return;
+    }
+    Object.keys(clientInfo).forEach(function (socketId) {
+        var userDataFound=clientInfo[socketId];
+        if(userDataRequested.roomname===userDataFound.roomname){
+            users.push(userDataFound.username)
+        }
+
+    })
+  socket.emit('messageFromServer',{
+      username:'Chatmaster',
+      text: 'Current users: ' + users.join(', ')
+  })
+}
 
 //define a io event to react on
 io.on('connection', function (socket) {
 
     //set of key/value pairs with--> special-key: {username,room}
-    var clientInfo={};
+
 
     socket.on('disconnect', function () {
         var userData =clientInfo[socket.id];
@@ -73,11 +100,16 @@ io.on('connection', function (socket) {
         console.log('Message received: ' + message.text);
         console.log('Message received: ' + message.username);
 
-        //BROADCAST RECEIVED MESSAGE
-        io.to(clientInfo[socket.id].roomname).emit('messageFromServer', message);   // broadcasts message to everyone including the sender
-        //socket.broadcast.emit('messageFromServer', message)    //broadcasts message to everyone BUT the sender.
+        //User sends a COMMAND instead of a message
+        // this app can handle he following COMMAND: @currentUsers
+        if (message.text ==='@currentUsers'){
+            sendCurrentUsers(socket)
 
-
+        }else{
+            //BROADCAST RECEIVED MESSAGE
+            io.to(clientInfo[socket.id].roomname).emit('messageFromServer', message);   // broadcasts message to everyone including the sender
+            //socket.broadcast.emit('messageFromServer', message)    //broadcasts message to everyone BUT the sender.
+        }
     })
 
 });
