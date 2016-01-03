@@ -33,6 +33,19 @@ io.on('connection', function (socket) {
     //set of key/value pairs key: {user,name}
     var clientInfo={};
 
+    socket.on('disconnect', function () {
+        var userData =clientInfo[socket.id];
+        if(typeof userData!=='undefined'){
+            socket.leave(userData.roomname);
+            io.to(userData.roomname).emit('messageFromServer',{
+                name:'WebMaster',
+                text:userData.username + ' has left the room.'
+            })
+            delete userData;
+        }
+    })
+
+
     //send message to client on first connect and logs in server console connection.
     socket.emit('messageFromServer',{
         name:'Webmaster',
