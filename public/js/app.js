@@ -27,10 +27,11 @@ socket.on("messageFromServer", function (message) {
     console.log(timeToShowInWelcome.format('MMMM Do YYYY, HH:mm:ss') +': '+  message.text );  //log message from serverin console of browser
 
     var $chatMessages=jQuery('.messages');
+    var $chatMessage =jQuery('<li class="list-group-item"></li>');
     //Selector # =target bij id, .= target by class or use name of the tag
-    $chatMessages.append('<p><strong>'+ message.username + ' '+  getDateTime('s')+'</strong></p>');  //name field added to message when send
-    $chatMessages.append('<p>'+ message.text + '</p>');  //adds content to exsiting mark-up
-
+    $chatMessage.append('<p><strong>'+ message.username + ' '+  getDateTime('s')+'</strong></p>');  //name field added to message when send
+    $chatMessage.append('<p>'+ message.text + '</p>');  //adds content to exsiting mark-up
+    $chatMessages.append($chatMessage);
 
 
 });
