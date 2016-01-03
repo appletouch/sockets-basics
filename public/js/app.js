@@ -7,6 +7,10 @@ var userName= getQueryVariable('username')||'Anonymous';
 var roomName= getQueryVariable('room')||'Lobby';
 console.log(userName+ ' wants to join '+ roomName);
 
+//update H1 tag wit room name
+jQuery(".room-title" ).text(roomName);
+
+
 //Write messeage in console of the browser to confirm connection with server
 socket.on("connect", function () {
     console.log("Message from client: connected from FE to Server")
